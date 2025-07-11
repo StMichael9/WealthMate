@@ -1,3 +1,6 @@
+// This file is still being worked on. I plan on adding functionality to actually transfer money between accounts.
+// For now, it's just a UI mockup.
+
 import React, { useState, useEffect } from "react";
 import { useBanks } from "../hooks/useBanks";
 import { motion } from "framer-motion";

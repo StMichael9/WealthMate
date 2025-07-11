@@ -1,3 +1,4 @@
+// Ai helped with this file
 import express from "express";
 import { plaidClient } from "./Plaid.js";
 import { PrismaClient } from "@prisma/client";
@@ -69,6 +70,26 @@ router.get("/banks", authenticate, async (req, res) => {
     const userId = req.user.id;
     const banks = await prisma.bankAccount.findMany({ where: { userId } });
     res.json({ banks });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete("/banks/:id", authenticate, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const bankId = req.params.id;
+
+    // Find the bank account to ensure it belongs to the user
+    const bank = await prisma.bankAccount.findUnique({ where: { id: bankId } });
+    if (!bank || bank.userId !== userId) {
+      return res.status(404).json({ error: "Bank account not found" });
+    }
+
+    // Delete the bank account
+    await prisma.bankAccount.delete({ where: { id: bankId } });
+
+    res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
